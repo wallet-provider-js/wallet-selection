@@ -1,5 +1,5 @@
 # Wallet-selection
-lightweight module to provide wallet selection for DApp users
+Lightweight module to provide wallet selection for DApp users.
 
 ## Assumptions
 
@@ -7,7 +7,7 @@ lightweight module to provide wallet selection for DApp users
 
 ## User Flow
 
-* If the user clicks on the WebApp [ Login ] button a function from this libary is called
+* When the user clicks on the WebApp [ Login / Connect Wallet ] button, a function from this libary is called
 * The function presents the user a screen to select a wallet.
 * When the user selects a wallet, the function resolves into a `ProviderInformation` structure
 * `ProviderInformation` contains data about the wallet: name, capabilities, url to wallet-provider.js file for this particular wallet
@@ -21,7 +21,7 @@ lightweight module to provide wallet selection for DApp users
 
 In order to keep the providers as simple as possible, key management, contract ABI, Tx composition and other functionality are intentionally kept outside of the scope of a wallet provider, but can be added by separate supporting libraries.
 
-## Functionalities
+## Provider basic Functionalities
 
 ### Sign Message [required] 
 
@@ -39,41 +39,11 @@ The provider receives a transaction, signs the Tx, send it to the blockchain and
 
 The provider receives the smart contract account id, and perform login/logout actions depending on the walllet. For some wallet/connection mechanisms no actions might be needed.
 
-## Capabilities
+The wallet-provider-interface is defined here: https://github.com/wallet-provider-js/wallet-provider-interface
 
-### Transport
 
-* **Sign**: The provider can sign messages. (the webapp must create the tx-msg, send it to the chain after signature, and manage responses)
-* **Build-Tx**: The provider can compose a message from a batch-transacion. (off-loads from the webapp the need to create the tx-msg)
-* **Sign-and-Send**: The provider can compose a message from a batch-transacion, sign it and send it. (off-loads from the webapp the need to create the tx-msg and all chain communications). **Sign-and-Send** implies **View-Call**, that is, the provider handles all communication with the blockchain
+## Technology
 
-### Finality
-* **complete-tx-flow**: The blockchain finality is under 10 secs. Send & View-call Tx always return tx-hash + status:completed + err|data 
-* **pending-tx-flow**: The blockchain finality is above 10 secs. Send & View-call Tx always return tx-hash + status:pending + err|data
-
-### Communication
-* **redirect**: The wallet is a Web wallet. Some functions return Promises, some others can cause a navigation to the Wallet website. The webapp must have a callback-url to receive responses. (NEAR Web Wallet)
-* **browser-extension**: The wallet uses a browser-extension, the provider uses in-browser channels to talk to the wallet and to relay responses to the webapp. All provider functions return Promises. (Narwallets)
-* **qr-code**: The wallet is a mobile wallet. Actions cause a QR-code to appear. ??????? to relay responses to the webapp. Promises??? (e.g Webconnect)
- 
-## Transactions
-
-* To provide a for the common single-call use case the provider can execute single items, but internally all transactions are BatchTransaction.
-* Wallet-providers with **Sign-Tx** capabilities have functions to create transactions items
- ** e.g. `Provider.viewCall(contract_id:string, method:string, args:Record<string,any> : TxItem`
- ** e.g. `Provider.call(contract_id:string, method:string, args:Record<string,any>, gas:number, attachedNativeToken:numer) : TxItem`
-
-Example, single call:
-```
- const result = await provider.execute(provider.view('contract.near','get_owner_id',{}))
-```
-
-Example, Batch Transaction:
-```
- let tx = provider.newBatchTx();
- tx.push(provider.call('contract.near','buy',{token:'stNEAR'},20,50));
- tx.push(provider.call('usdnear.stable.near','sell',{token:'USDNEAR'},50,0));
- const result = await provider.signAndSend(tx)
-```
+This lightweight library should use DOM-injection and plain typescript to be usable on most DApps.
 
 
