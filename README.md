@@ -46,4 +46,9 @@ The wallet-provider-interface is defined here: https://github.com/wallet-provide
 
 This lightweight library should use DOM-injection and plain typescript to be usable on most DApps.
 
+## References
+
+https://gov.near.org/t/wallet-selection-sdk/215/6
+
+https://docs.blocknative.com/onboard
 
